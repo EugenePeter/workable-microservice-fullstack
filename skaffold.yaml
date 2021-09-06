@@ -1,0 +1,28 @@
+apiVersion: skaffold/v2alpha3
+kind: Config
+deploy:
+  kubectl:
+    manifests:
+      - ./infra/k8s/*
+build:
+  #local:
+  # push: false
+  googleCloudBuild:
+    projectId: workable-323103
+  artifacts:
+    - image: us.gcr.io/workable-323103/auth
+      context: auth
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: "src/**/*.ts"
+            dest: .
+    - image: us.gcr.io/workable-323103/query-services
+      context: query-services
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: "src/**/*.ts"
+            dest: .

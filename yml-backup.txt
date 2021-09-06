@@ -1,0 +1,6 @@
+            # - name: KAFKA_ADVERTISED_PORT
+            #   value: "32557"
+            # - name: KAFKA_ADVERTISED_HOST_NAME
+            #   value: "35.187.241.184"
+            # - name: KAFKA_ADVERTISED_LISTENERS
+            #   value: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092

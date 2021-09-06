@@ -1,0 +1,71 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zookeeper-deployment-1
+spec:
+  selector:
+    matchLabels:
+      app: zookeeper-1
+  template:
+    metadata:
+      labels:
+        app: zookeeper-1
+    spec:
+      containers:
+        - name: zoo1
+          image: bitnami/zookeeper:latest
+          ports:
+            - containerPort: 2181
+          env:
+            - name: ZOOKEEPER_ID
+              value: "1"
+            - name: ZOOKEEPER_SERVER_1
+              value: zoo1
+            - name: ALLOW_PLAINTEXT_LISTENER
+              value: "yes"
+            - name: ALLOW_ANONYMOUS_LOGIN
+              value: "yes"
+          volumeMounts:
+            - name: zoo-volume
+              mountPath: /app/
+      volumes:
+        - name: zoo-volume
+          persistentVolumeClaim:
+            claimName: zoo-volume
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: zoo-volume
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 50Mi
+  storageClassName: default
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: zoo-service
+  labels:
+    app: zookeeper-1
+spec:
+  selector:
+    app: zookeeper-1
+  ports:
+    # - name: client
+    #   port: 2181
+    #   protocol: TCP
+    - name: zoo1
+      port: 2181
+      protocol: TCP
+    - name: follower
+      port: 2888
+      protocol: TCP
+    - name: leader
+      port: 3888
+      protocol: TCP
